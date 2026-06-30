@@ -2,8 +2,8 @@
 title: "About"
 ---
 
-I'm Zhen Liu. This is my personal blog where I write about machine learning,
-systems, and software engineering.
+I'm Zhen Liu. This is my personal blog where I write about molecular science, machine learning,
+and software engineering.
 
 ## Elsewhere
 

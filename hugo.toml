@@ -42,7 +42,7 @@ pagerSize = 10
   [params.paige.site]
     color_scheme = "light"    # data-attribute mode so the JS toggle can switch themes
     menu_style = "underline"
-    description = "Notes on molecules, machine learning, and software engineering."
+    description = "Notes on molecular science, machine learning, and software engineering."
 
   [params.paige.pages]
     disable_toc = false
