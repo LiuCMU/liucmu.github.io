@@ -1,0 +1,53 @@
+baseURL = "https://LiuCMU.github.io/"
+locale = "en-us"
+title = "Zhen Liu"
+copyright = "© Zhen Liu"
+
+# Generate an RSS feed for the home page
+[outputs]
+home = ["html", "rss"]
+
+[pagination]
+pagerSize = 10
+
+# Syntax highlighting (Paige recommends classes on + a style)
+[markup]
+  [markup.highlight]
+    noClasses = false
+    style = "github"
+  [markup.goldmark.renderer]
+    unsafe = true   # allow raw HTML in Markdown (needed for some embeds)
+
+# --- Theme module ---
+[module]
+  [[module.imports]]
+    path = "github.com/willfaught/paige"
+
+# --- Navigation menu ---
+[[menu.main]]
+  name = "Posts"
+  url = "/posts/"
+  weight = 1
+[[menu.main]]
+  name = "About"
+  url = "/about/"
+  weight = 2
+[[menu.main]]
+  name = "Tags"
+  url = "/tags/"
+  weight = 3
+
+# --- Theme params ---
+[params]
+  [params.paige.site]
+    color_scheme = "auto"     # auto | dark | light
+    menu_style = "underline"
+    description = "Notes on machine learning, systems, and software engineering."
+
+  [params.paige.pages]
+    disable_toc = false
+    minimum_heading_level = 2
+
+# --- Author (Paige authors taxonomy) ---
+[author]
+  name = "Zhen Liu"
