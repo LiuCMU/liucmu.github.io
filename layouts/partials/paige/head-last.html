@@ -1,0 +1,16 @@
+{{/*
+  Apply the visitor's preferred color scheme before the page paints, to avoid a
+  flash. Priority: their saved choice (localStorage) > their OS preference.
+  Works because color_scheme = "light" makes Paige/Bootstrap compile in
+  data-attribute mode, so toggling [data-bs-theme] switches themes.
+*/}}
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem("paige-theme");
+      var theme = saved
+        || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-bs-theme", theme);
+    } catch (e) {}
+  })();
+</script>

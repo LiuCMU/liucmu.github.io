@@ -8,12 +8,22 @@ Personal blog built with [Hugo](https://gohugo.io/) and the
 Prerequisites (already installed on this machine): Hugo extended, Go, Dart Sass.
 
 ```sh
-# Live preview with drafts at http://localhost:1313
-hugo server --buildDrafts
+# Live preview with drafts at http://localhost:6789
+hugo server --buildDrafts --port 6789
 
 # Production build into ./public
 hugo --gc --minify
 ```
+
+## Light/dark mode toggle
+
+`color_scheme = "light"` in `hugo.toml` compiles Bootstrap in data-attribute
+mode. Two project hooks add a manual toggle button (the theme is not forked):
+
+- `layouts/partials/paige/head-last.html` — applies the saved theme (or the
+  visitor's OS preference on first visit) before paint, to avoid a flash.
+- `layouts/partials/paige/site-header-last.html` — the sun/moon toggle button
+  and its click handler; the choice is remembered in `localStorage`.
 
 ## Writing a new post
 

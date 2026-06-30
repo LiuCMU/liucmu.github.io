@@ -1,0 +1,40 @@
+{{/* Light/dark mode toggle button. Paige loads Bootstrap Icons, so bi-* icons work. */}}
+<div class="paige-row-tall text-center">
+  <button id="paige-theme-toggle" type="button"
+          class="btn btn-sm btn-outline-secondary"
+          aria-label="Toggle light and dark mode">
+    <i class="bi" aria-hidden="true"></i>
+    <span class="ms-1"></span>
+  </button>
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById("paige-theme-toggle");
+    if (!btn) return;
+    var icon = btn.querySelector("i");
+    var label = btn.querySelector("span");
+
+    function current() {
+      return document.documentElement.getAttribute("data-bs-theme") || "light";
+    }
+    function render(theme) {
+      if (theme === "dark") {
+        icon.className = "bi bi-moon-stars-fill";
+        label.textContent = "Dark";
+      } else {
+        icon.className = "bi bi-sun-fill";
+        label.textContent = "Light";
+      }
+    }
+
+    render(current());
+
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-bs-theme", next);
+      try { localStorage.setItem("paige-theme", next); } catch (e) {}
+      render(next);
+    });
+  })();
+</script>

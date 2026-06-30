@@ -40,7 +40,7 @@ pagerSize = 10
 # --- Theme params ---
 [params]
   [params.paige.site]
-    color_scheme = "auto"     # auto | dark | light
+    color_scheme = "light"    # data-attribute mode so the JS toggle can switch themes
     menu_style = "underline"
     description = "Notes on machine learning, systems, and software engineering."
 
