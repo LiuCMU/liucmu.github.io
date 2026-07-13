@@ -1,37 +1,99 @@
-# OAuth and OIDC for Absolutely Beginners
+# OAuth and OIDC for Absolute Beginners
 
-This post explains important concepts in Authorization and Authentication (like OAuth and OIDC) in plain language. With the power of AI, many scientist can build projects in an unprecedented way (myself included). This will for sure accelerate the pace of scientific discovery. However, many engineering conventions are not well known to scientists. Without knowing fundamental concepts, we can hardly provide effective prompts to Agents and judge the quality of their responses. This post is a brief introduction to auth, and how they are used in practice in plain language. The goal is to help scientists understand the concepts and use them in practice.
+AI now lets many people build real software for the first time. But a lot of engineering conventions are still unfamiliar territory, and auth is one of them. Knowing how it works helps you write better prompts for coding agents and judge whether their output is any good. This post explains the core ideas — passwords, PKI/TLS, OAuth, and OIDC — in plain language.
 
-Auth in the simplist form can just be the username and password. This is the foundation of auth and is still widely used nowadays. This simple format becomes insufficient when our needs change in the real world. Nowadays, everyone has hundreds of accounts, each of which requires a authentication method. Creating a password for each account satisfies the basic need of auth, but it is really hard to mamange all the accounts and passwords for both personal use case and business solutions. 
+## From passwords to "Login with Google"
 
-One natural idea to remove unnecessary passwords and just use a few common accounts like Google or Apple to login to other accounts and services. How to use one account to authorize another use case effictively and efficiently was a open question. Providing our Google or Apple account and passwords to other accounts is not a good idea. We need a way to safely use our Google or Apple account to login to other accounts without providing our credentials. This is where OAuth and OIDC come into play.
+The simplest form of auth is a username and password, and it's still everywhere. The trouble is scale: we each have hundreds of accounts, and a separate password for every one is impossible to manage — for personal use and business systems alike.
 
-Before OAuth takes place, certificates are used to verify the identity of the server. Let's define client as the side requiring certain service, e.g. a browswer. The server be the side that provides certain service, e.g. a website that provides information. The first phase is all about answering who the server is and whether the client can trust the server. In the browswer example, the process is as follows:
+A natural idea is to reuse a few accounts we use daily — Google, Apple — to log in everywhere else. But we clearly shouldn't hand our Google password to every random website. What we need is a way to use our Google identity *without* revealing our Google credentials. That's the problem OAuth and OIDC solve.
 
-1. Whenever you enter a website, the client reach out and ask the wesite server: who are you?
-2. The website server answers the client: I'm a server for this website. Here is my certificate
-3.  The client receives the certificate, verify it, and decide whether to trust the server.
+Getting there safely means answering three questions, each handled by a different piece of technology:
 
-This process works exactly as how we use our ID to verify our identity in real life business. And the software world mimic the real world in this way, afterall, softwares are designed by real people. And There is a large software infrastructure to support this process, collectively called public key infrastructure (PKI) and transport layer security (TLS). PKI consists of several pieces, including certificate authority (CA), certificate, public key, private key, rules for validation, trust store and so on. TLS is a protocol that uses PKI to provide secure communication between client and server.
+1. Is the server really who it claims to be? — handled by PKI and TLS.
+2. Can I let an app access my data without giving it my password? — handled by OAuth.
+3. How does the app learn who I actually am? — handled by OIDC.
 
-The CA is like goverments that issues passports. Some common CA include [GlobalSign](https://www.globalsign.com/en), [DigiCert](https://www.digicert.com/), and [Let's Encrypt](https://letsencrypt.org/). Many software (e.g. a browser) have a built-in list of trusted CAs, which is called trust store. A server needs to be registered via the CA so that whatever uses it can verify its identity. A server creates a secrete key and a public key. The secrete key is kept by it self and never released to anyone. The public key is handled to CA during registration. The CA verifies the identity of the server. The CA then issues a certificate to the server. The certificate is like a passport that proves the identity of the server. The certificate contains the public key information of the server and other information. During the handshake process between a client and a server, the certificate (which contains the pubic key) and the private key are used to establish a secure communication channel between the client and the server. Then the client and server can communicate securely using a temporary symmetric key for encryption. The protocol for communication encryption is called TLS.
+Let's take them in order.
 
-After establishing the identity of the server, we can move on to the next phase of auth. Think of this as the step of checking and verifing ID in banks before we do any business. 
+## 1. Trusting the server: PKI and TLS
 
-Again, let's use the browser example. The user wants to access a cool website that requires authentication. The user can use their Google account to login to the website. The OAuth process is as follows:
+Before any login happens, your browser (the client) needs to know the website (the server) is genuine and not an impostor. The exchange looks like this:
 
+1. The client connects and asks the server: *who are you?*
+2. The server replies: *here is my certificate.*
+3. The client checks the certificate and decides whether to trust it.
 
-![OIDC process flow example](OIDC_flow_example.png)
+This mirrors how we verify someone's ID in real-life business — unsurprisingly, since software is designed by real people to model the real world. And just as an ID is only convincing because a trusted government issued it, a certificate is only convincing because a trusted Certificate Authority (CA) issued it. Common CAs include [GlobalSign](https://www.globalsign.com/en), [DigiCert](https://www.digicert.com/), and [Let's Encrypt](https://letsencrypt.org/). Your browser ships with a built-in list of CAs it trusts, called the trust store.
 
-1. User accesses the website and clicks on the "Login with Google" button.
-2. The website/client redirects the user to the Google login page for auth. Under the hood, the redirect URL contains the client ID of the website, the redirect URI of the website (which redirects the user back to the website after Googleauth), and the scope of the access request (which defines what information the website wants to access from the user's Google account).
-3. Google asks the user to login and grant permission to the website to access their Google account. The user can choose to grant or deny the permission.
-4. If the user grants permission, Google redirects the user back to the website with an authorization code. The website then exchanges the authorization code for an access token and ID token from Google. JWT (JSON Web Token) is used to encode the access token and ID token. [This website](https://www.jwt.io/) is a great website to play with JWT encoding and decoding. The access token is used to access the user's Google account. Note that like many other services, Google can have an Authorization server and a Resource server. The Authorization server is responsible for issuing access tokens and ID tokens, while the Resource server is responsible for providing access to the user's Google account (for example, access calendar). 
-5. Once the website receives the access token and ID token, it can use them to access the user's Google account and retrieve the information it needs.
+The whole system is called Public Key Infrastructure (PKI), and Transport Layer Security (TLS) is the protocol that puts it to use. Here is how a certificate comes to exist and gets used:
 
-The above process is a simple OIDC flow. You might also hear OIDC (OpenID Connect) in the context of OAuth. OIDC is an identity layer on top of OAuth 2.0 that allows clients to verify the identity of the user based on the authentication performed by an authorization server. Think of OAuth as a protocol for getting access to many different resources, while OIDC is a special case of OAuth that is specifically designed for authentication. OIDC uses the same flow as OAuth, but it adds an ID token that contains information about the user, such as their name and email address. The ID token is a JWT that is signed by the authorization server, which allows the client to verify its authenticity. Essentially, OIDC can be thought of as a way to use OAuth where the scope of the access request is limited to authentication and identity information.
+- The server generates its own key pair: a public key and a private key. The private key is kept secret and never leaves the server.
+- The server sends its public key and identity details to a CA. The CA verifies them (Let's Encrypt, for example, just checks that you control the domain), then signs them into a certificate. The CA never sees the private key.
+- The certificate's keys prove the server's identity: the server signs a message with its private key, and the client verifies that signature with the public key from the certificate.
+- During the same handshake, the client and server agree on a fresh, temporary session key.
+- That session key — a fast *symmetric* key — is what actually encrypts everything sent back and forth.
 
+In short: the certificate keys authenticate the server and bootstrap the connection; a separate session key does the real encryption. This whole handshake is what TLS defines.
 
-## Useful References
-1. [jtw.io](https://www.jwt.io/) is a great website to play with JWT encoding and decoding. 
-2. The [YouTube Video by Nate Barbettini](https://youtu.be/996OiexHze0) introduces the concepts and examples of OAuth and OIDC in very easy to understand way.
+## 2. Granting access without a password: OAuth
+
+Now the server is trustworthy — but that only settles who the *server* is, not what an app may do on *your* behalf. Suppose a scheduling app wants to read your Google Calendar. You could give it your Google password, but then it could do anything as you, forever. OAuth (Open Authorization) is the alternative: it hands the app a limited, revocable key to one thing — like a valet key that starts the car but won't open the trunk.
+
+OAuth is an authorization protocol — about granting limited access, not proving who you are. The flow looks like this:
+
+![OAuth flow: granting an app access to a resource](OAuth_flow_example.svg)
+
+1. In the app, you ask to connect your Google Calendar.
+2. The app redirects you to Google's authorization server, passing its client ID, a redirect URI (Uniform Resource Identifier, where Google sends you back), a scope (exactly what it wants — here, read your calendar), and a state value (a random token that guards against forged requests).
+3. Google asks you to log in and approve that specific access. You can grant or deny it.
+4. On approval, Google returns a short-lived authorization code. Behind the scenes, the app exchanges that code — plus its own client secret — for an access token.
+5. The app calls Google's resource server with the access token and reads only your calendar.
+
+The key win: the app gets a scoped, revocable token instead of your password. Notice what it does *not* get — any statement of who you are. Access tokens are often JWTs (JSON Web Tokens), compact signed strings you can inspect at [jwt.io](https://www.jwt.io/).
+
+## 3. Knowing who you are: OIDC
+
+OAuth proved the app may touch your calendar, but for a "Login with Google" button the website needs something different: your identity. That is the gap OIDC (OpenID Connect) fills. It's a thin identity layer on top of OAuth 2.0 — the same flow you just saw, with one addition: the ID token.
+
+![OIDC flow: Login with Google](OIDC_flow_example.svg)
+
+The token exchange now returns an access token *and* an ID token. The ID token is always a JWT, signed by the authorization server, carrying verified facts about you such as your name and email. Because it's signed, the website can trust who logged in without asking you for anything more.
+
+So the two fit together cleanly:
+
+- OAuth = authorization — "can this app access my stuff?"
+- OIDC = authentication — "who is this user?"
+
+That is why the everyday "Login with Google" button is really OIDC: it uses OAuth to get access, and adds the ID token to establish identity.
+
+## Citation
+
+Cited as:
+
+> Liu, Zhen. (Jul 2026). "OAuth and OIDC for Absolute Beginners". Zhen's Blog. https://LiuCMU.github.io/posts/auth/.
+
+Or
+
+```bibtex
+@article{liu2026auth,
+  title   = "OAuth and OIDC for Absolute Beginners",
+  author  = "Liu, Zhen",
+  journal = "LiuCMU.github.io",
+  year    = "2026",
+  month   = "Jul",
+  url     = "https://LiuCMU.github.io/posts/auth/"
+}
+```
+
+## References
+
+[1] Auth0. ["JWT Debugger."](https://www.jwt.io/)
+
+[2] Nate Barbettini. ["OAuth 2.0 and OpenID Connect (in plain English)."](https://youtu.be/996OiexHze0) OktaDev, 2018.
+
+[3] Dick Hardt. ["The OAuth 2.0 Authorization Framework."](https://datatracker.ietf.org/doc/html/rfc6749) RFC 6749, IETF, 2012.
+
+[4] Sakimura et al. ["OpenID Connect Core 1.0."](https://openid.net/specs/openid-connect-core-1_0.html) OpenID Foundation, 2014.
+
+[5] Jones et al. ["JSON Web Token (JWT)."](https://datatracker.ietf.org/doc/html/rfc7519) RFC 7519, IETF, 2015.
