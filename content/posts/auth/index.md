@@ -38,7 +38,7 @@ In short: the certificate keys authenticate the server and bootstrap the connect
 
 ## 2. Granting access without a password: OAuth
 
-Now the server is trustworthy — but that only settles who the *server* is, not what an app may do on *your* behalf. Suppose a scheduling app wants to read your Google Calendar. You could give it your Google password, but then it could do anything as you, forever. OAuth (Open Authorization) is the alternative: it hands the app a limited, revocable key to one thing — like a valet key that starts the car but won't open the trunk.
+Now the server is trustworthy — but that only settles who the *server* is, not what an app may do on *your* behalf. Suppose a scheduling app wants to read your Google Calendar. You could give it your Google password, but then it could do anything as you, forever. OAuth (Open Authorization)<sup>[1](#ref-1), [2](#ref-2)</sup> is the alternative: it hands the app a limited, revocable key to one thing — like a valet key that starts the car but won't open the trunk.
 
 OAuth is an authorization protocol — about granting limited access, not proving who you are. The flow looks like this:
 
@@ -50,11 +50,11 @@ OAuth is an authorization protocol — about granting limited access, not provin
 4. On approval, Google returns a short-lived authorization code. Behind the scenes, the app exchanges that code — plus its own client secret — for an access token.
 5. The app calls Google's resource server with the access token and reads only your calendar.
 
-The key win: the app gets a scoped, revocable token instead of your password. Notice what it does *not* get — any statement of who you are. Access tokens are often JWTs (JSON Web Tokens), compact signed strings you can inspect at [jwt.io](https://www.jwt.io/).
+The key win: the app gets a scoped, revocable token instead of your password. Notice what it does *not* get — any statement of who you are. Access tokens are often JWTs (JSON Web Tokens)<sup>[3](#ref-3)</sup>, compact signed strings you can inspect at [jwt.io](https://www.jwt.io/)<sup>[4](#ref-4)</sup>.
 
 ## 3. Knowing who you are: OIDC
 
-OAuth proved the app may touch your calendar without sharing your identity. If the website needs something different — your identity — that is the gap OIDC (OpenID Connect) fills. It's a thin identity layer on top of OAuth 2.0 — the same flow you just saw, with one addition: the ID token. It might sounds counterintuitive to leave resource authorization to OAuth and identity to OIDC rather than having a single protocol, but it satisfies software world reality: the two are separate concerns. OAuth is about *what* an app can do; OIDC is about *who* you are.
+OAuth proved the app may touch your calendar without sharing your identity. If the website needs something different — your identity — that is the gap OIDC (OpenID Connect)<sup>[1](#ref-1), [5](#ref-5)</sup> fills. It's a thin identity layer on top of OAuth 2.0 — the same flow you just saw, with one addition: the ID token. It might sounds counterintuitive to leave resource authorization to OAuth and identity to OIDC rather than having a single protocol, but it satisfies software world reality: the two are separate concerns. OAuth is about *what* an app can do; OIDC is about *who* you are.
 
 ![OIDC flow: Login with Google](OIDC_flow_example.svg)
 
@@ -88,12 +88,12 @@ Or
 
 ## References
 
-[1] Auth0. ["JWT Debugger."](https://www.jwt.io/)
+<a id="ref-1"></a>[1] Barbettini, N. OAuth 2.0 and OpenID Connect (in Plain English); OktaDev, 2018. https://youtu.be/996OiexHze0 (accessed 2026-07-13).
 
-[2] Nate Barbettini. ["OAuth 2.0 and OpenID Connect (in plain English)."](https://youtu.be/996OiexHze0) OktaDev, 2018.
+<a id="ref-2"></a>[2] Hardt, D., Ed. The OAuth 2.0 Authorization Framework; RFC 6749; Internet Engineering Task Force, 2012. https://datatracker.ietf.org/doc/html/rfc6749 (accessed 2026-07-13).
 
-[3] Dick Hardt. ["The OAuth 2.0 Authorization Framework."](https://datatracker.ietf.org/doc/html/rfc6749) RFC 6749, IETF, 2012.
+<a id="ref-3"></a>[3] Jones, M.; Bradley, J.; Sakimura, N. JSON Web Token (JWT); RFC 7519; Internet Engineering Task Force, 2015. https://datatracker.ietf.org/doc/html/rfc7519 (accessed 2026-07-13).
 
-[4] Sakimura et al. ["OpenID Connect Core 1.0."](https://openid.net/specs/openid-connect-core-1_0.html) OpenID Foundation, 2014.
+<a id="ref-4"></a>[4] Auth0. JWT.io: JSON Web Token Debugger. https://www.jwt.io/ (accessed 2026-07-13).
 
-[5] Jones et al. ["JSON Web Token (JWT)."](https://datatracker.ietf.org/doc/html/rfc7519) RFC 7519, IETF, 2015.
+<a id="ref-5"></a>[5] Sakimura, N.; Bradley, J.; Jones, M.; de Medeiros, B.; Mortimore, C. OpenID Connect Core 1.0; OpenID Foundation, 2014. https://openid.net/specs/openid-connect-core-1_0.html (accessed 2026-07-13).
