@@ -61,6 +61,59 @@ To override any other Paige template, add a file at the matching path under
   referenced by relative path.
 - Site-wide assets go in `static/` and are referenced from root (e.g.
   `/homepage_background.jpeg`).
-- `content/_index.md` is the homepage; `content/about.md` is the About page.
+- `content/_index.md` is the homepage; `content/about.md` is the About page
+  (intentionally blank — title only).
 - Post front matter fields come from `archetypes/default.md`: `title`, `date`,
-  `draft`, `authors`, `tags`, `summary`.
+  `draft`, `authors`, `tags`, `summary`. Every post **must** have full front
+  matter and **no leading `# H1`** — Paige renders the title from front matter,
+  so a top-level heading in the body duplicates it.
+- Each post should ship a **`toc.png`** in its bundle, used as the homepage /
+  Posts card thumbnail. Make it **3:2 (e.g. 1536×1024)** so it fills the card's
+  image area with no letterboxing; posts without one fall back to a 📝 tile.
+- `summary` is what shows as the card preview text — keep it to ~1–2 sentences.
+
+### References / citations (see `content/posts/auth/index.md`)
+
+- Cite in-text as superscripts: `<sup>[n](#ref-n)</sup>` (raw HTML works because
+  `markup.goldmark.renderer.unsafe = true`).
+- The References list uses matching anchors: `<a id="ref-n"></a>[n] ...`.
+- Format entries in **ACS style**; number them in **order of first appearance**
+  in the text.
+- Manual numbering is deliberate (Goldmark footnotes are *not* used) so the
+  "References" heading and ACS layout stay under our control.
+
+## Homepage and post cards
+
+- Post preview **cards** are rendered by `layouts/partials/post-cards.html`
+  (context = a page collection), shared by `layouts/home.html` and
+  `layouts/posts/list.html` so both pages look identical.
+- Card structure: **title on top** (full width), a **middle row** of the
+  `toc.png` thumbnail (~32% width, inset in a padded frame) beside the intro
+  (`.Summary`), then a **meta row** at the bottom (tags · date · words · reading
+  time). The whole card is a single `<a>`, so tags are rendered as **plain text**
+  there (nested `<a>` would be invalid HTML); clickable tags live on the post /
+  tag pages.
+- Homepage **stats** are in `layouts/partials/home-stats.html`: two tiles,
+  **Posts** (build-time count) and **Readers** (from `data/stats.json`). Reading
+  time / word count are shown on cards and post pages, **not** as a homepage
+  page-level figure.
+- **Custom CSS lives in the `<style>` block of
+  `layouts/partials/paige/head-last.html`** (cards, stats, banner, responsive
+  images). Use Bootstrap CSS variables (`var(--bs-border-color)`,
+  `--bs-body-bg`, `--bs-secondary-color`, `--bs-tertiary-bg`) so light and dark
+  modes both work automatically.
+- Nav: **Home** is a menu item in `hugo.toml`; breadcrumbs are disabled
+  (`paige.site.disable_breadcrumbs`). The per-post table-of-contents outline is
+  disabled site-wide (`paige.pages.disable_toc = true`).
+
+## Analytics (GoatCounter)
+
+- Site code **`zhenliu`** (`params.goatcounter` in `hugo.toml`); the tracking
+  script is injected from `head-last.html` and ignores localhost.
+- The deploy workflow (`.github/workflows/hugo.yml`) fetches
+  `/api/v0/stats/total` with the repo secret **`GOATCOUNTER_TOKEN`** (Read
+  statistics scope) and writes `data/stats.json` before each build; a daily
+  `schedule` cron refreshes it without a commit.
+- **GoatCounter tracks a single visitor metric only** — there is no separate
+  pageviews number in its API. "Readers" = visitors. True pageviews would
+  require switching analytics (e.g. Umami/Plausible).
