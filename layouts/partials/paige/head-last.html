@@ -122,13 +122,13 @@
     font-weight: 600;
   }
 
-  /* Homepage stats: 3 columns × 2 rows (value over label). */
+  /* Homepage stats: 2 columns (value over label). */
   .paige-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     width: 100%;
-    max-width: 48rem;
+    max-width: 32rem;
     margin: 2rem auto 0;
   }
   .paige-stat {

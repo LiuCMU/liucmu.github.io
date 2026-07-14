@@ -44,9 +44,10 @@ pagerSize = 10
 # --- Theme params ---
 [params]
   # GoatCounter site code (the "<code>" in https://<code>.goatcounter.com).
-  # Leave empty to disable traffic tracking; the homepage Readers/Views stats
-  # show "—" until this is set. Localhost visits are never counted.
-  goatcounter = ""
+  # Leave empty to disable traffic tracking. Localhost visits are never counted.
+  # The homepage "Readers" stat comes from data/stats.json, refreshed at build
+  # time by the deploy workflow (see .github/workflows/hugo.yml).
+  goatcounter = "zhenliu"
 
   [params.paige.site]
     color_scheme = "light"    # data-attribute mode so the JS toggle can switch themes

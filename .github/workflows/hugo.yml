@@ -4,6 +4,9 @@ on:
   push:
     branches: ["main", "master"]
   workflow_dispatch:
+  # Rebuild daily so the homepage "Readers" stat refreshes even without commits.
+  schedule:
+    - cron: "17 6 * * *"
 
 permissions:
   contents: read
@@ -45,6 +48,30 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Fetch GoatCounter stats
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+          GOATCOUNTER_CODE: zhenliu
+        run: |
+          mkdir -p data
+          if [ -z "$GOATCOUNTER_TOKEN" ]; then
+            echo "No GOATCOUNTER_TOKEN secret set; keeping existing data/stats.json"
+            exit 0
+          fi
+          END=$(date -u +%Y-%m-%dT%H:00:00Z)
+          RESP=$(curl -s --max-time 30 \
+            -H "Authorization: Bearer $GOATCOUNTER_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://${GOATCOUNTER_CODE}.goatcounter.com/api/v0/stats/total?start=2024-01-01T00:00:00Z&end=${END}" || true)
+          READERS=$(echo "$RESP" | jq -r '.total // empty')
+          if [ -n "$READERS" ]; then
+            printf '{\n  "readers": %s,\n  "updated_utc": "%s"\n}\n' "$READERS" "$END" > data/stats.json
+            echo "Updated readers=$READERS"
+          else
+            echo "GoatCounter fetch failed or empty; keeping existing data/stats.json"
+            echo "Response was: $RESP"
+          fi
+          cat data/stats.json
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
