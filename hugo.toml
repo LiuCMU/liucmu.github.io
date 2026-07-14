@@ -25,17 +25,21 @@ pagerSize = 10
 
 # --- Navigation menu ---
 [[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+[[menu.main]]
   name = "Posts"
   url = "/posts/"
-  weight = 1
+  weight = 2
 [[menu.main]]
   name = "About"
   url = "/about/"
-  weight = 2
+  weight = 3
 [[menu.main]]
   name = "Tags"
   url = "/tags/"
-  weight = 3
+  weight = 4
 
 # --- Theme params ---
 [params]
@@ -43,6 +47,7 @@ pagerSize = 10
     color_scheme = "light"    # data-attribute mode so the JS toggle can switch themes
     menu_style = "underline"
     description = "Notes on molecular science, machine learning, and software engineering."
+    disable_breadcrumbs = true   # Home lives in the nav menu instead
 
   [params.paige.pages]
     disable_toc = false

@@ -1,0 +1,33 @@
+{{/*
+  Home page override. Renders the homepage bundle (banner + intro) via Paige's
+  page partial, then a custom grid of post preview cards: ~1/4 toc.png thumbnail
+  on the left, title + preview text on the right. No word count / reading time
+  here — those are shown only on each post's own page.
+*/}}
+{{ define "main" }}
+{{ $page := . }}
+
+{{ partial "paige/page.html" $page }}
+
+{{ $posts := where site.RegularPages "Section" "posts" }}
+{{ with $posts.ByDate.Reverse }}
+    <div class="paige-home-posts align-items-center d-flex flex-column w-100">
+        {{ range . }}
+            {{ $post := . }}
+            <a class="paige-post-card" href="{{ $post.RelPermalink }}">
+                <div class="paige-post-card-img">
+                    {{ with $post.Resources.GetMatch "toc.png" }}
+                        <img src="{{ .RelPermalink }}" alt="{{ $post.Title }} thumbnail" loading="lazy">
+                    {{ else }}
+                        <div class="paige-post-card-noimg" aria-hidden="true">📝</div>
+                    {{ end }}
+                </div>
+                <div class="paige-post-card-body">
+                    <p class="paige-post-card-title">{{ $post.Title }}</p>
+                    <p class="paige-post-card-summary">{{ $post.Summary | plainify | htmlUnescape }}</p>
+                </div>
+            </a>
+        {{ end }}
+    </div>
+{{ end }}
+{{ end }}

@@ -1,4 +1,11 @@
-# OAuth and OIDC for Absolute Beginners
+---
+title: "OAuth and OIDC for Absolute Beginners"
+date: 2026-07-13
+draft: false
+authors: ["Zhen Liu"]
+tags: ["software engineering"]
+summary: "A plain-language introduction to the pieces behind “Login with Google” — certificates, PKI/TLS, OAuth, and OIDC."
+---
 
 AI now lets many people build real software for the first time. But a lot of engineering conventions are still unfamiliar territory, and auth is one of them. Knowing how it works helps you write better prompts for coding agents and judge whether their output is any good. This post explains the core ideas — certificates, PKI/TLS, OAuth, and OIDC — in plain language.
 
