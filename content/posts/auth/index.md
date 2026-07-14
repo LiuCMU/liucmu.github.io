@@ -1,6 +1,6 @@
 # OAuth and OIDC for Absolute Beginners
 
-AI now lets many people build real software for the first time. But a lot of engineering conventions are still unfamiliar territory, and auth is one of them. Knowing how it works helps you write better prompts for coding agents and judge whether their output is any good. This post explains the core ideas — passwords, PKI/TLS, OAuth, and OIDC — in plain language.
+AI now lets many people build real software for the first time. But a lot of engineering conventions are still unfamiliar territory, and auth is one of them. Knowing how it works helps you write better prompts for coding agents and judge whether their output is any good. This post explains the core ideas — certificates, PKI/TLS, OAuth, and OIDC — in plain language.
 
 ## From passwords to "Login with Google"
 
@@ -54,7 +54,7 @@ The key win: the app gets a scoped, revocable token instead of your password. No
 
 ## 3. Knowing who you are: OIDC
 
-OAuth proved the app may touch your calendar, but for a "Login with Google" button the website needs something different: your identity. That is the gap OIDC (OpenID Connect) fills. It's a thin identity layer on top of OAuth 2.0 — the same flow you just saw, with one addition: the ID token.
+OAuth proved the app may touch your calendar without sharing your identity. If the website needs something different — your identity — that is the gap OIDC (OpenID Connect) fills. It's a thin identity layer on top of OAuth 2.0 — the same flow you just saw, with one addition: the ID token. It might sounds counterintuitive to leave resource authorization to OAuth and identity to OIDC rather than having a single protocol, but it satisfies software world reality: the two are separate concerns. OAuth is about *what* an app can do; OIDC is about *who* you are.
 
 ![OIDC flow: Login with Google](OIDC_flow_example.svg)
 
