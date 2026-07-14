@@ -1,0 +1,41 @@
+{{/*
+  Homepage stats: Posts / Readers / Views as a 3-column, 2-row (value + label)
+  grid. Posts is counted at build time. Readers (unique visitors) and Views
+  (pageviews) are filled in client-side from the GoatCounter counter API when
+  site.Params.goatcounter is set; otherwise they show "—".
+*/}}
+{{ $posts := (where site.RegularPages "Section" "posts") }}
+{{ $code := site.Params.goatcounter }}
+
+<div class="paige-stats" id="paige-stats">
+    <div class="paige-stat">
+        <div class="paige-stat-value" id="paige-stat-posts">{{ len $posts }}</div>
+        <div class="paige-stat-label">Posts</div>
+    </div>
+    <div class="paige-stat">
+        <div class="paige-stat-value" id="paige-stat-readers">—</div>
+        <div class="paige-stat-label">Readers</div>
+    </div>
+    <div class="paige-stat">
+        <div class="paige-stat-value" id="paige-stat-views">—</div>
+        <div class="paige-stat-label">Views</div>
+    </div>
+</div>
+
+{{ with $code }}
+    <script>
+      (function () {
+        fetch("https://{{ . }}.goatcounter.com/counter/TOTAL.json")
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (d.count) {
+              document.getElementById("paige-stat-views").textContent = d.count;
+            }
+            if (d.count_unique) {
+              document.getElementById("paige-stat-readers").textContent = d.count_unique;
+            }
+          })
+          .catch(function () { /* leave the dash on failure */ });
+      })();
+    </script>
+{{ end }}

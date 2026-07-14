@@ -43,6 +43,11 @@ pagerSize = 10
 
 # --- Theme params ---
 [params]
+  # GoatCounter site code (the "<code>" in https://<code>.goatcounter.com).
+  # Leave empty to disable traffic tracking; the homepage Readers/Views stats
+  # show "—" until this is set. Localhost visits are never counted.
+  goatcounter = ""
+
   [params.paige.site]
     color_scheme = "light"    # data-attribute mode so the JS toggle can switch themes
     menu_style = "underline"

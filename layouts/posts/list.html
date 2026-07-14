@@ -1,0 +1,10 @@
+{{/*
+  Posts section list override: show the "Posts" page header, then the same post
+  preview cards used on the home page (instead of Paige's default text list).
+*/}}
+{{ define "main" }}
+{{ $page := . }}
+
+{{ partial "paige/page.html" $page }}
+{{ partial "post-cards.html" (where site.RegularPages "Section" "posts").ByDate.Reverse }}
+{{ end }}

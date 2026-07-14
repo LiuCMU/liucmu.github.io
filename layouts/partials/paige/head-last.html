@@ -32,8 +32,10 @@
     border-radius: 0.5rem;
   }
 
-  /* Homepage post preview cards: ~1/4 thumbnail + ~3/4 title & preview. */
-  .paige-home-posts {
+  /* Homepage / posts-list preview cards: ~1/3 thumbnail + title, preview, meta.
+     The thumbnail is shown in full (object-fit: contain), so any aspect ratio
+     is visible; a 3:2 toc.png (e.g. 1536×1024) fills the area most cleanly. */
+  .paige-post-cards {
     gap: 1.25rem;
     margin-top: 2rem;
   }
@@ -41,6 +43,7 @@
     display: flex;
     width: 100%;
     max-width: 48rem;
+    min-height: 10rem;
     border: 1px solid var(--bs-border-color);
     border-radius: 0.75rem;
     overflow: hidden;
@@ -55,37 +58,85 @@
     color: inherit;
   }
   .paige-post-card-img {
-    flex: 0 0 25%;
-    max-width: 25%;
+    flex: 0 0 34%;
+    max-width: 34%;
     background-color: var(--bs-tertiary-bg);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0.75rem;
   }
   .paige-post-card-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0.25rem;
   }
   .paige-post-card-noimg {
     font-size: 2rem;
     opacity: 0.5;
-    padding: 1.5rem;
   }
   .paige-post-card-body {
-    flex: 1 1 75%;
+    flex: 1 1 66%;
     min-width: 0;
     padding: 1.25rem 1.5rem;
     text-align: left;
+    align-self: center;
   }
   .paige-post-card-title {
     font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     line-height: 1.3;
   }
   .paige-post-card-summary {
     color: var(--bs-secondary-color);
+    margin-bottom: 0.6rem;
+  }
+  .paige-post-card-meta {
+    color: var(--bs-secondary-color);
+    font-size: 0.85rem;
     margin-bottom: 0;
   }
+  .paige-post-card-sep {
+    margin: 0 0.4rem;
+    opacity: 0.6;
+  }
+  .paige-post-card-tags {
+    font-weight: 600;
+  }
+
+  /* Homepage stats: 3 columns × 2 rows (value over label). */
+  .paige-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 48rem;
+    margin: 2rem auto 0;
+  }
+  .paige-stat {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.75rem;
+    padding: 1rem 0.75rem;
+    text-align: center;
+  }
+  .paige-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .paige-stat-label {
+    color: var(--bs-secondary-color);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
 </style>
+
+{{/* GoatCounter traffic tracking (privacy-friendly; ignores localhost).
+     Enabled only when params.goatcounter is set in hugo.toml. */}}
+{{ with site.Params.goatcounter }}
+<script data-goatcounter="https://{{ . }}.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+{{ end }}
