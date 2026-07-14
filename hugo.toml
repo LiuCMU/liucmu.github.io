@@ -55,7 +55,7 @@ pagerSize = 10
     disable_breadcrumbs = true   # Home lives in the nav menu instead
 
   [params.paige.pages]
-    disable_toc = false
+    disable_toc = true
     minimum_heading_level = 2
 
 # --- Author (Paige authors taxonomy) ---
