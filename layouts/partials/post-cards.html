@@ -1,9 +1,10 @@
 {{/*
   Renders a grid of post preview cards. Context (.) is a page collection.
-  Each card: ~1/3 toc.png thumbnail (shown in full) on the left, and on the
-  right the title, preview text, and a meta row (tags · date · words · reading
-  time). The whole card is a single link, so tags are plain text here (their
-  clickable versions live on the post and tag pages) to keep valid HTML.
+  Each card: title on top (full width), then a middle row with the toc.png
+  thumbnail on the left and the intro/preview text on the right, then a meta
+  row at the bottom (tags · date · words · reading time). The whole card is a
+  single link, so tags are plain text here (their clickable versions live on
+  the post and tag pages) to keep valid HTML.
 
   New posts should ship a 3:2 `toc.png` (e.g. 1536×1024) in their bundle so the
   thumbnail fills the image area cleanly; posts without one get a fallback tile.
@@ -13,30 +14,30 @@
         {{ range . }}
             {{ $post := . }}
             <a class="paige-post-card" href="{{ $post.RelPermalink }}">
-                <div class="paige-post-card-img">
-                    {{ with $post.Resources.GetMatch "toc.png" }}
-                        <img src="{{ .RelPermalink }}" alt="{{ $post.Title }} thumbnail" loading="lazy">
-                    {{ else }}
-                        <span class="paige-post-card-noimg" aria-hidden="true">📝</span>
-                    {{ end }}
-                </div>
-                <div class="paige-post-card-body">
-                    <p class="paige-post-card-title">{{ $post.Title }}</p>
-                    <p class="paige-post-card-summary">{{ $post.Summary | plainify | htmlUnescape }}</p>
-                    <p class="paige-post-card-meta">
-                        {{ with $post.GetTerms "tags" }}
-                            <span class="paige-post-card-tags">
-                                {{ range $i, $t := . }}{{ if $i }}, {{ end }}{{ $t.LinkTitle }}{{ end }}
-                            </span>
-                            <span class="paige-post-card-sep">·</span>
+                <p class="paige-post-card-title">{{ $post.Title }}</p>
+                <div class="paige-post-card-mid">
+                    <div class="paige-post-card-img">
+                        {{ with $post.Resources.GetMatch "toc.png" }}
+                            <img src="{{ .RelPermalink }}" alt="{{ $post.Title }} thumbnail" loading="lazy">
+                        {{ else }}
+                            <span class="paige-post-card-noimg" aria-hidden="true">📝</span>
                         {{ end }}
-                        <span>{{ $post.PublishDate.Format "Jan 2, 2006" }}</span>
-                        <span class="paige-post-card-sep">·</span>
-                        <span>{{ $post.WordCount }} words</span>
-                        <span class="paige-post-card-sep">·</span>
-                        <span>{{ $post.ReadingTime }} min read</span>
-                    </p>
+                    </div>
+                    <p class="paige-post-card-summary">{{ $post.Summary | plainify | htmlUnescape }}</p>
                 </div>
+                <p class="paige-post-card-meta">
+                    {{ with $post.GetTerms "tags" }}
+                        <span class="paige-post-card-tags">
+                            {{ range $i, $t := . }}{{ if $i }}, {{ end }}{{ $t.LinkTitle }}{{ end }}
+                        </span>
+                        <span class="paige-post-card-sep">·</span>
+                    {{ end }}
+                    <span>{{ $post.PublishDate.Format "Jan 2, 2006" }}</span>
+                    <span class="paige-post-card-sep">·</span>
+                    <span>{{ $post.WordCount }} words</span>
+                    <span class="paige-post-card-sep">·</span>
+                    <span>{{ $post.ReadingTime }} min read</span>
+                </p>
             </a>
         {{ end }}
     </div>
