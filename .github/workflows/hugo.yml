@@ -55,21 +55,36 @@ jobs:
         run: |
           mkdir -p data
           if [ -z "$GOATCOUNTER_TOKEN" ]; then
-            echo "No GOATCOUNTER_TOKEN secret set; keeping existing data/stats.json"
+            echo "::warning::GOATCOUNTER_TOKEN secret is empty/unset; keeping existing data/stats.json"
+            cat data/stats.json
             exit 0
           fi
           END=$(date -u +%Y-%m-%dT%H:00:00Z)
-          RESP=$(curl -s --max-time 30 \
+          URL="https://${GOATCOUNTER_CODE}.goatcounter.com/api/v0/stats/total?start=2024-01-01T00:00:00Z&end=${END}"
+          # Capture body and HTTP status separately so auth failures are visible in the logs.
+          BODY=$(curl -s --max-time 30 -w '\n%{http_code}' \
             -H "Authorization: Bearer $GOATCOUNTER_TOKEN" \
-            -H "Content-Type: application/json" \
-            "https://${GOATCOUNTER_CODE}.goatcounter.com/api/v0/stats/total?start=2024-01-01T00:00:00Z&end=${END}" || true)
-          READERS=$(echo "$RESP" | jq -r '.total // empty')
-          if [ -n "$READERS" ]; then
+            "$URL" || true)
+          CODE=$(printf '%s' "$BODY" | tail -n1)
+          RESP=$(printf '%s' "$BODY" | sed '$d')
+          echo "GoatCounter HTTP status: ${CODE:-<none>}"
+          if [ "$CODE" != "200" ]; then
+            echo "::warning::GoatCounter fetch failed (HTTP ${CODE:-<none>}); keeping existing data/stats.json."
+            echo "::warning::Check that GOATCOUNTER_TOKEN is valid and has the 'Read statistics' scope."
+            echo "Response body: $RESP"
+            cat data/stats.json
+            exit 0
+          fi
+          READERS=$(printf '%s' "$RESP" | jq -r '.total // empty')
+          if [ -z "$READERS" ]; then
+            echo "::warning::HTTP 200 but no .total field in response; keeping existing data/stats.json"
+            echo "Response body: $RESP"
+          elif [ "$READERS" = "0" ]; then
+            echo "::warning::GoatCounter returned total=0 pageviews for the period. Token/scope are fine; GoatCounter has no recorded traffic. Writing 0."
+            printf '{\n  "readers": 0,\n  "updated_utc": "%s"\n}\n' "$END" > data/stats.json
+          else
             printf '{\n  "readers": %s,\n  "updated_utc": "%s"\n}\n' "$READERS" "$END" > data/stats.json
             echo "Updated readers=$READERS"
-          else
-            echo "GoatCounter fetch failed or empty; keeping existing data/stats.json"
-            echo "Response was: $RESP"
           fi
           cat data/stats.json
       - name: Build with Hugo
