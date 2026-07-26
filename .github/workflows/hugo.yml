@@ -71,6 +71,10 @@ jobs:
           if [ "$CODE" != "200" ]; then
             echo "::warning::GoatCounter fetch failed (HTTP ${CODE:-<none>}); keeping existing data/stats.json."
             echo "::warning::Check that GOATCOUNTER_TOKEN is valid and has the 'Read statistics' scope."
+            # Surface the response body in an annotation too (not just the auth-gated log),
+            # so the cause is visible via the public Actions API on this public repo.
+            BODY_ONELINE=$(printf '%s' "$RESP" | tr '\n\r' '  ' | cut -c1-300)
+            echo "::warning::GoatCounter response body: ${BODY_ONELINE:-<empty>}"
             echo "Response body: $RESP"
             cat data/stats.json
             exit 0
