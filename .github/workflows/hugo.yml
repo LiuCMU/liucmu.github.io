@@ -61,12 +61,23 @@ jobs:
           fi
           END=$(date -u +%Y-%m-%dT%H:00:00Z)
           URL="https://${GOATCOUNTER_CODE}.goatcounter.com/api/v0/stats/total?start=2024-01-01T00:00:00Z&end=${END}"
-          # Capture body and HTTP status separately so auth failures are visible in the logs.
-          BODY=$(curl -s --max-time 30 -w '\n%{http_code}' \
-            -H "Authorization: Bearer $GOATCOUNTER_TOKEN" \
-            "$URL" || true)
-          CODE=$(printf '%s' "$BODY" | tail -n1)
-          RESP=$(printf '%s' "$BODY" | sed '$d')
+          # GoatCounter's hosted API intermittently returns 404 for a valid token
+          # on this (non-deprecated) endpoint — failures alternate run-to-run with
+          # the same secret. Retry a few times so one flaky response doesn't blank
+          # the Readers stat. (A bad/expired token returns 401, not 404, and would
+          # never recover here — that case still falls through to the warning below.)
+          CODE=""; RESP=""
+          for attempt in 1 2 3 4 5; do
+            # Capture body and HTTP status separately so auth failures are visible in the logs.
+            BODY=$(curl -s --max-time 30 -w '\n%{http_code}' \
+              -H "Authorization: Bearer $GOATCOUNTER_TOKEN" \
+              "$URL" || true)
+            CODE=$(printf '%s' "$BODY" | tail -n1)
+            RESP=$(printf '%s' "$BODY" | sed '$d')
+            echo "GoatCounter attempt ${attempt}: HTTP ${CODE:-<none>}"
+            [ "$CODE" = "200" ] && break
+            sleep 5
+          done
           echo "GoatCounter HTTP status: ${CODE:-<none>}"
           if [ "$CODE" != "200" ]; then
             echo "::warning::GoatCounter fetch failed (HTTP ${CODE:-<none>}); keeping existing data/stats.json."
