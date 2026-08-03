@@ -25,7 +25,7 @@ Agents can be assembled to form more complex systems. A common taxonomy of agent
 
 
 ## Agent tools and MCPs
-
+Tools empower LLMs to do more tasks. Training on public data up to a specific data enables the LLM to be come an expert in general domains, but it lacks information on current situation and the ability to take actions. Tools serve the purpose. Apparently, a tool either enables the LLM to get more information of allow it to take actions in the real world. Some informational tool examples include web search tool that enables LLM to get up-to-date information, or a tool that can query internal database. Action tools example inlude a code execution sandbox for data analyis. The boundaries between informational and action tools are fuzzy, because  for example, some tools take actions in order to get information. In essence, it's all about gather information and transform information. The gathered information forms a context that is tailored to a specific task and aligns with a general patterns that the LLM learned, then the LLM outputs the next tokens based on the surrounding context information, which turns out to be the solution.  
 
 ## Context engineering and memory
 
