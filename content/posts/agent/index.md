@@ -51,8 +51,26 @@ Skills are just markdown files telling the agent how to use a setup tools to ach
 MCP empower agents to do more, but also brings more risks as the agent utilize external tools. Among many risks, a tpical security risk of providing tools is called the "confused deputy" problem. It is a classic security vulnerabilty where a program with privileges (the "deputy") is tricked by another entity with fewer previleges into missuing its authrority, performing actions on behalf of the attacker. Imagine a tool or MCP server that has access to confidential information that is only available to certain special user groups. A common user may have access to the agent but not the MCP server. If the user tricks the agent to call the MCP tool to do thing on behalf of the user that can not be done by the user, this could cause serious information leakage. Thus, security needs to be carefully considered when adding tools to agents. 
 
 ## Context engineering and memory
+LLMs are stateless in isolation. They don't remember anything beyond what is fed into it as the input. Let's define a turn as a user input and the corresponding LLM response. A session as a complete chat history, containing many turns between the LLM and user. On agentic applications, it appears that the LLM knows the chat history in a turn, that is because all the questions and anwers are fed to the LLM before each turn starts. The mechanism enabling LLMs to remember chat history in a session is called short-term memory; when we start a new session, it appears the LLM has some general persona tailored to the user or project, this is because there is a factsheet preloaded before the start of each session. The mechanism for managing LLM persona and tailor to a user or project is called long-term memory. 
 
+Both short-memory and long-term memory are just text files, like ReadME, the tricky part is how to curate, retrieve, use and update these information, which collectively is called prompt engineering and context engineering. Let's cake an example to demonstrate the ideas. Imagine in an agentic application, in a turn, the user ask a question, what the LLM says is probably something like the following:
 
+```
+system prompt:
+
+Context information:
+    Chat History or Summary
+    Relevant tool documentation
+    Relevant examples
+    Relevant Skill information
+    Broad Memory
+
+User question:
+```
+
+prompt engineering typically means either of the following: Optimizing a specific system prompt so the LLM pretend itself as some domain expert for something and response always follow certain pattern in answering questions. It's common to see a prompt like "You are an expert in molecular expert". This shoft phrase "molecular expert" helps the LLM navigate to the molecular region in the latent space so it's ready to pull relevant data patterns in answering this type of question [Are there research paper or blog on the effective of this sentence?]. Another common meaning is to structure your own question in a way that is easy for the LLM to answer or do the task for us. For example, a detailed prompt on how to make a perfect plot for you. 
+
+Context engineering is more about how to curate, retrieve and feed the context information to the LLM. It's a larger scope than the prompt engineering.
 
 ## Practical design tips
 
