@@ -74,6 +74,7 @@ Context engineering is more about how to curate, retrieve and feed the context i
 
 ## Practical design tips
 
+
 ### Agent security
 Traditional, deterministic guardrails is necessary for agent security. For example, a hardcoded logic that an explicit user confirmation is needed to call a specific tool. Relying on LLM's judgement could be a supplement, but it can be manipulated by techniques like prompt injection.
 
