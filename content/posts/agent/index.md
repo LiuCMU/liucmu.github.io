@@ -25,9 +25,33 @@ Agents can be assembled to form more complex systems. A common taxonomy of agent
 
 
 ## Agent tools and MCPs
-Tools empower LLMs to do more tasks. Training on public data up to a specific data enables the LLM to be come an expert in general domains, but it lacks information on current situation and the ability to take actions. Tools serve the purpose. Apparently, a tool either enables the LLM to get more information of allow it to take actions in the real world. Some informational tool examples include web search tool that enables LLM to get up-to-date information, or a tool that can query internal database. Action tools example inlude a code execution sandbox for data analyis. The boundaries between informational and action tools are fuzzy, because  for example, some tools take actions in order to get information. In essence, it's all about gather information and transform information. The gathered information forms a context that is tailored to a specific task and aligns with a general patterns that the LLM learned, then the LLM outputs the next tokens based on the surrounding context information, which turns out to be the solution.  
+Tools empower LLMs to do more tasks. Trained LLMs become an expert in general domains, but it lacks information on current status and the ability to take actions. Tools serve the purpose. Apparently, a tool either enables the LLM to get more information of allow it to take actions in the real world. Some informational tool examples include web search tool that enables LLM to get up-to-date information, or a tool that can query internal database. Action tools example inlude a code execution sandbox for data analyis. The boundaries between informational and action tools are fuzzy, because  for example, some tools take actions in order to get information. In essence, it's all about gather information and transform information. The gathered information forms a context that is tailored to a specific task and aligns with a general patterns that the LLM knows, then the LLM outputs the next tokens based on the surrounding context information, which turns out to be the solution.
+
+Tools take many formats. Actually, main stream agent deloveper kit mentioned above all come with a suite of powerful built-in tools, like web search. Customized tools can be comand line tools for certain softwares, for example aws cli for exploring Cloud Status; Python functions for achieving a specific task; or any other APIs that can be consumed. 
+
+A common way for integrating models and tools is called model context protocal (MCP). MCP aims to serve as the universal interface between AI applications and the vast world of external tools and data. MCP contains the following components:
+- Host: The application respoinsible for creating and maintaing the MCP clients.
+- Client: A software component embedded in the Host that maintains the connection with the Server.
+- Server: the server that exposes the MCP tools, it tells the client what tools this MCP can achieve, how to use them. It receives the request from the client, execute the request, then return the results back to the client.
+In practice, the host and client are not distinguished clearly, we can think of the host as the agent and the client as the modules of the agent. These concepts are often mentioned in convention because MCP is inspired by the Language Server Protocol in the software development, which contains these major components [This paragraph needs verification]. The most important part is to know how to add MCP as an available tool for your agent.
+
+![MCP integrates the model and tools](mcp2.png) In this example, the agent application contains the core agent architecture and a local MCP server, communication via stdio. There are two external servers connected via HTTP. Both the MCP host and client are embedded in the agent application. The MCP clients can simply be different modules that connect with different MCP servers. 
+
+
+
+All communications between MCP clients and servers are built with standardized technical foundation for consistency and interpretability. MCP uses JSON-RPC 2.0 as its base message format, so MCP speaks JSON. All message types are made up from basic components like request, results, erros and notifications. There are typically two types of standard for communication between the client and the server:
+- stdio (Standard input/output): Used for fast and direct communication in local environments of the agent where the MCP server runs as a subprocess of the Host application.
+- Streamable HTTP: These are capabilties provided by remote servers. 
+MCP is more or less like a thin wrapper with good documents on existing tools or APIs. For many local use cases, a well documented tools and MCP behave similarily. But the existing of remote MCP server make it easier for sharing the capability across multple agents, fostering a reusable ecosystem.
+
+Clear documentation is the key for buidling good tools, including MCPs. We need clear definition of the input meaning and types, output meaning and types, doc string on what does this tool do, informative names, etc. Everything is pretty much the same as we have in the [PEP8 guidlinces](https://peps.python.org/pep-0008/) for writing clear code. 
+
+Skills are just markdown files telling the agent how to use a setup tools to achieve a specific task. If we think of tools as the cooking wares, then the skills are the receipe. 
+
+MCP empower agents to do more, but also brings more risks as the agent utilize external tools. Among many risks, a tpical security risk of providing tools is called the "confused deputy" problem. It is a classic security vulnerabilty where a program with privileges (the "deputy") is tricked by another entity with fewer previleges into missuing its authrority, performing actions on behalf of the attacker. Imagine a tool or MCP server that has access to confidential information that is only available to certain special user groups. A common user may have access to the agent but not the MCP server. If the user tricks the agent to call the MCP tool to do thing on behalf of the user that can not be done by the user, this could cause serious information leakage. Thus, security needs to be carefully considered when adding tools to agents. 
 
 ## Context engineering and memory
+
 
 
 ## Practical design tips
