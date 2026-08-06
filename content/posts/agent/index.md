@@ -1,5 +1,5 @@
 ---
-title: "Agents"
+title: "Agents in a Nutshell"
 date: 2026-07-26
 draft: true
 authors: ["Zhen Liu"]
@@ -51,9 +51,9 @@ Skills are just markdown files telling the agent how to use a setup tools to ach
 MCP empower agents to do more, but also brings more risks as the agent utilize external tools. Among many risks, a tpical security risk of providing tools is called the "confused deputy" problem. It is a classic security vulnerabilty where a program with privileges (the "deputy") is tricked by another entity with fewer previleges into missuing its authrority, performing actions on behalf of the attacker. Imagine a tool or MCP server that has access to confidential information that is only available to certain special user groups. A common user may have access to the agent but not the MCP server. If the user tricks the agent to call the MCP tool to do thing on behalf of the user that can not be done by the user, this could cause serious information leakage. Thus, security needs to be carefully considered when adding tools to agents. 
 
 ## Context engineering and memory
-LLMs are stateless in isolation. They don't remember anything beyond what is fed into it as the input. Let's define a turn as a user input and the corresponding LLM response. A session as a complete chat history, containing many turns between the LLM and user. On agentic applications, it appears that the LLM knows the chat history in a turn, that is because all the questions and anwers are fed to the LLM before each turn starts. The mechanism enabling LLMs to remember chat history in a session is called short-term memory; when we start a new session, it appears the LLM has some general persona tailored to the user or project, this is because there is a factsheet preloaded before the start of each session. The mechanism for managing LLM persona and tailor to a user or project is called long-term memory. 
+LLMs are stateless in isolation. They don't remember anything beyond what is fed into it as the input. Let's define a turn as a user input and the corresponding LLM response. A session as a complete chat history, containing many turns between the LLM and user. On agentic applications, it appears that the LLM knows the chat history in a turn, that is because all the questions and anwers are fed to the LLM before each turn starts. The mechanism enabling LLMs to remember chat history in a session is called short-term memory.  To enable session memroy so that the LLM knows every context in a chat session, the most common ways are sliding window or async summary. For sliding window, the orchestration layer keeps only the most recent k turns. This is simple and cheap, but loses relevant information in the long chat. Aync summary has an LLM to summarize the chat history as the conversation goes, so the each chat history is stored as a brief format as context for the LLM to answer current question. The summary process typically runs in the background. This method is able to keep more relevant information, but also require more compute; when we start a new session, it appears the LLM has some general persona tailored to the user or project, this is because there is a factsheet preloaded before the start of each session. The mechanism for managing LLM persona and tailor to a user or project is called long-term memory. Long-term memory are typically general factual or procedure information extracted from shor-term memory. They are saved to benefit future conversations.
 
-Both short-memory and long-term memory are just text files, like ReadME, the tricky part is how to curate, retrieve, use and update these information, which collectively is called prompt engineering and context engineering. Let's cake an example to demonstrate the ideas. Imagine in an agentic application, in a turn, the user ask a question, what the LLM says is probably something like the following:
+Both short-memory and long-term memory are just text files, like ReadME, the tricky part is how to curate, retrieve, use and update these information, which collectively is called prompt engineering and context engineering. Let's cake an example to demonstrate the ideas. Imagine in an agentic application, in a turn, the user ask a question, what the LLM says is probably something like the following [fill the following example for me]:
 
 ```
 system prompt:
@@ -68,9 +68,16 @@ Context information:
 User question:
 ```
 
-prompt engineering typically means either of the following: Optimizing a specific system prompt so the LLM pretend itself as some domain expert for something and response always follow certain pattern in answering questions. It's common to see a prompt like "You are an expert in molecular expert". This shoft phrase "molecular expert" helps the LLM navigate to the molecular region in the latent space so it's ready to pull relevant data patterns in answering this type of question [Are there research paper or blog on the effective of this sentence?]. Another common meaning is to structure your own question in a way that is easy for the LLM to answer or do the task for us. For example, a detailed prompt on how to make a perfect plot for you. 
+prompt engineering typically means either of the following: Optimizing a specific system prompt so the LLM pretend itself as some domain expert for something and response always follow certain pattern in answering questions. It's common to see a prompt like "You are an expert in molecular expert". This shoft phrase "molecular expert" helps the LLM navigate to the molecular region in the latent space so it's ready to pull relevant data patterns in answering this type of question [Are there research paper or blog on the effective of this sentence?]. Another common meaning is to structure your own question in a way that is easy for the LLM to answer or do certain task for us. For example, a detailed prompt on how to make a perfect plot for you. I find the [openai prompt engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering) is a good reference for prompt engineering. 
 
-Context engineering is more about how to curate, retrieve and feed the context information to the LLM. It's a larger scope than the prompt engineering.
+Context engineering is more about how to curate, retrieve and feed the context information to the LLM. It's a larger scope than the prompt engineering. It is a dynamic context management process, aiming to provide just everthing needed to answer a specific question. The dynamic context include memory, skill files, domain knoelwdge, etc. This information is typically too large to be fed to LLM directly, so only relevant chunks are retrieved to answer specific questions. A common retrieve method is called retrieval augmented generation (RAG). It works like the follows, all relevant context information is stored in a database, chunked into small pieces and vectorized, then for each question, which is also vectorized, a similarity core calcualted based on the vectors is used to retrieve the relevant context information. Of course, similarity score is not always sufficnet, very often other factors, like recency, exact match, etc are all used together to determin the relevance and importance of a relevant context information in answering the current question. The goal is that the LLM has precisely the context needed to anwser the question. 
+
+
+
+
+
+
+### context engineering and post-training
 
 ## Practical design tips
 
