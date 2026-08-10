@@ -78,16 +78,11 @@ prompt engineering typically means either of the following: Optimizing a specifi
 
 Context engineering is more about how to curate, retrieve and feed the context information to the LLM. It's a larger scope than the prompt engineering. It is a dynamic context management process, aiming to provide just everthing needed to answer a specific question. The dynamic context include memory, skill files, domain knoelwdge, etc. This information is typically too large to be fed to LLM directly, so only relevant chunks are retrieved to answer specific questions. In the above example, probably only relevant tool definition, examples, memory, external knowledge and artifact are included in the context. A common retrieve method is called retrieval augmented generation (RAG). It works like the follows, all relevant context information is stored in a database, chunked into small pieces and vectorized, then for each question, which is also vectorized, a similarity core calcualted based on the vectors is used to retrieve the relevant context information. Of course, similarity score is not always sufficnet, very often other factors, like recency, exact match, etc are all used together to determin the relevance and importance of a relevant context information in answering the current question. The goal is that the LLM has precisely the context needed to anwser the question. 
 
+A recent trend in context engineering is skills. Skills are procecures or instructions on how to use a set of tools to achieve a specific task. Skills are typically stored in markdown files, and can be shared across agents. A skill file contains a concise description of what the skill can do, when to invoke it and a detailed instructions. The concise description allows the skill to be dynamically found by an agent session without occupying unnecessary context window. A skill is only fullly loaded when it is deemed to be useful to the current task. Some skills are bultin, but most skills can are curated by domain experts or the agent users. This enables a user to transform a more general storng agent for specific tasks or use cases.  
+
 Providing more context to the LLM to get better performance is often called "in-context learning". The LLM learns how to perform tasks from demonstrations in the prompt. It's import to provide just the needed context. INsufficient context hinders model performance because certain key information is missing in the reasoning process. Too much context also degrade the model perofrmance because the model's ability to pay attention to critical information diminishes as context grows [Is there researon showing how LLM performs as the context size change?]. This is sometimes called "context rot".
 
-
-### context engineering and post-training
-
-## Practical design tips
-
-
-### Agent security
-Traditional, deterministic guardrails is necessary for agent security. For example, a hardcoded logic that an explicit user confirmation is needed to call a specific tool. Relying on LLM's judgement could be a supplement, but it can be manipulated by techniques like prompt injection.
+Beyond context engineering (i.e. in-context learning), it's also popular to post-train an LLM on domain knowledge. Post-training uses curated training examples to change model behavior to suit it for specific domain knowledge, the LLM parameters are slightly changed during this process. post-training is also more expensive than context engineering. I think post training is more suited for non-public information and shows up repeatedly in a customized domain, while context engineering is more suited foradd-hoc information to solve a specific task. [Need to list a table comparing the differences/relationship between incontext learning and post-training. If there are papers comparing the differences, worth pull the results too.] 
 
 ## Evals
 
@@ -95,5 +90,16 @@ Traditional, deterministic guardrails is necessary for agent security. For examp
 Is the question answerable? Does the question contain all information needed to answer the question?
 
 
+
+### Agent security
+Traditional, deterministic guardrails is necessary for agent security. For example, a hardcoded logic that an explicit user confirmation is needed to call a specific tool. Relying on LLM's judgement could be a supplement, but it can be manipulated by techniques like prompt injection.
+
+
+## Practical design tips
+
+
 ## Use agents effectively
 Agents are good at tasks with clear goals and well-defined workflows. This is determined by the nature of LLMs, and is helpful in using agents more efficiently.
+
+
+
