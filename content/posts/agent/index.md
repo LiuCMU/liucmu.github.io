@@ -86,10 +86,11 @@ Beyond context engineering (i.e. in-context learning), it's also popular to post
 
 ## Evals
 
+As with any ML systems, accuracy is the most important metric for evaluating agent performance. Another important metric is the efficiency of the agent. Efficiency can be measured by two aspects: the number of tokens used to answer a question, and the trajectory of the agent to reach the answer. The number of tokens used is a direct measure of the cost of using the agent, and the trajectory is a measure of how efficient the agent is in reaching the answer. A good agent should be able to reach the answer with minimal tokens and in a short trajectory.
 
-Is the question answerable? Does the question contain all information needed to answer the question?
+Non-deterministic characteristic of LLMs make it requires more careful attention in designing the question-answer pair for an agent, and the evaluation is typically a combination of fixed metrics, LLM as a judge and human reviews. For questions where the answers are free text, most metrics in conventioanl linguistic evaluations can be used, for example BLEU. LLMs can also be used to evaluate the quality of the answer if a detailed rubric is provided. Exploiting questions whose answers are numerical or multiple choice is a good way, because the allows deterministic evaluation. For example, frame the question as "hoe many ..." or "List ...". Confining the questions up to a specific date is helpful in case when the dataset changes over time. For example, a questions can be "What is the number of .... up to 2026-08-11"? It is also helpful to evaluate the agents abilityy in response to negative questions. For example, if the question is ambiguous or If the question does not contain all the information needed to ansser the question, does the agent know to ask the user to clarify or just made implicit assumptions? If a question is out of scope of its accessible data and tools, does the agent konw to refuse and not make up an answer?
 
-
+Common tools for logging agent traces and evaluatting agent include Langfuse (open source), LangSmith (commercial), Wandb (commercial), etc. [Add links to each tool]. 
 
 ### Agent security
 Traditional, deterministic guardrails is necessary for agent security. For example, a hardcoded logic that an explicit user confirmation is needed to call a specific tool. Relying on LLM's judgement could be a supplement, but it can be manipulated by techniques like prompt injection.
@@ -103,3 +104,4 @@ Agents are good at tasks with clear goals and well-defined workflows. This is de
 
 
 
+[For each topic mentioned in the blog, search on internet and papers to see if there are any important new trend that is missing, and list them for me to review.]
