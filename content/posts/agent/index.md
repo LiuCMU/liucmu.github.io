@@ -92,16 +92,20 @@ Non-deterministic characteristic of LLMs make it requires more careful attention
 
 Common tools for logging agent traces and evaluatting agent include Langfuse (open source), LangSmith (commercial), Wandb (commercial), etc. [Add links to each tool]. 
 
-### Agent security
-Traditional, deterministic guardrails is necessary for agent security. For example, a hardcoded logic that an explicit user confirmation is needed to call a specific tool. Relying on LLM's judgement could be a supplement, but it can be manipulated by techniques like prompt injection.
+Agent security is worth equal attention as the agent capability. Since agent can take actions in the outside world, it can potentially take wrong and even harmful actions [provide examples on how agent openai model attacks hugging face]. NOt only should we carefully design the agent logic to miminize the risks of bad actions, but also we should take full advantage of existing software infrastructure security features to safe guard the agent behavior. Traditional, deterministic guardrails is necessary for agent security. For example, a hardcoded logic that an explicit user confirmation is needed to call a specific tool. Relying on LLM's judgement could be a supplement, but it can be manipulated by techniques like prompt injection. An example list of common guardrails from traditional software that can be used include:
+- IRSA roles in AWSS so an agent pod can only do a set of actions permissioned
+- For applications where readonly access is sufficient, readonly configuration system so the agent only read but not write important data sources or configuration.
+- An isolation pod for the agent to execute code. 
+- ... 
 
 
-## Practical design tips
+## Production
 
+We have covered the fundamentals of building an agent. Now that we have an agent that can do tasks or answer questions with appropriate tools, now it's time to consider deploy the agent, so the agent is available to users just as if ChatGPT is available for our usage. One more thing we need before a production release is a user interface (UI). Streamlit is the go-to UI for quick prototype, it provides a chat interface in a quick manner. With all the components ready, we need to containerizae the agent application, then this container can be deployed via common cloud service like AWS. Many cloud services take care the process of scale to  many users if needed, for example, AWS EKS. It is worth noting this is just a general way of deploying an agent application for broad usage. If your agent is developed with a specific agent developt kit, like Google ADK, many of them probably provide one-click style deploy to their agent cloud. [need verify and provide example doc link]. This is even more convenient, but is very often limited to a specific provider. Amore advanced UI would be the open web user interface. The interface itself largely mimic what the ChatGPT interface we saw, nad has many built-in tools like collecitng user feedback , automatic chat history management, etc. Open we bui itself is a application that needs to be deployed, so it takes a little more complexity to than streamlit, but once deployed, it can be serve multiple agent applications, The details of using open web ui is not discussed here for sake of centering around fundamentals of agent development. Following convential software development practices, it is also common to have multiple development environment, for example, a DEV environment and a prd environment, so new agentic features can be fully tested in a twin environment before shipping the user testing. Many production related concepts, like Good CICD, A/B testing, etc is also very often needed.  
 
 ## Use agents effectively
 Agents are good at tasks with clear goals and well-defined workflows. This is determined by the nature of LLMs, and is helpful in using agents more efficiently.
 
-
+With this content, hopefully you get a basic understanding of all fundamentals of agent development, and is ready either to try or build an agent yourself. 
 
 [For each topic mentioned in the blog, search on internet and papers to see if there are any important new trend that is missing, and list them for me to review.]
