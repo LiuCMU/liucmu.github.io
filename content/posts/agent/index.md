@@ -1,7 +1,7 @@
 ---
 title: "Agents in a Nutshell"
 date: 2026-08-16
-draft: true
+draft: false
 authors: ["Zhen Liu", "Wenyi Zhang"]
 tags: ["software engineering", "machine learning"]
 summary: "An LLM is a brain with no hands; an agent gives it hands. A plain-language guide to building AI agents — tools and MCP, context and memory, evaluation, and production."
