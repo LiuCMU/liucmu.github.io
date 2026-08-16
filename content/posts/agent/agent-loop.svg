@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="400" viewBox="0 0 900 400" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52514e"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="900" height="400" fill="#fcfcfb"/>
+
+  <!-- title -->
+  <text x="40" y="34" font-size="19" font-weight="700" fill="#0b0b0b">The core agent loop: gather &#8594; transform &#8594; repeat until solved</text>
+
+  <!-- Done (exit) box, top-center over the diamond/tools gap -->
+  <rect x="555" y="72" width="170" height="52" rx="10" fill="#e6f6ef" stroke="#1baf7a" stroke-width="1.5"/>
+  <text x="640" y="95" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle">Done</text>
+  <text x="640" y="113" font-size="12" fill="#52514e" text-anchor="middle">final answer to user</text>
+
+  <!-- gather / transform annotations -->
+  <text x="356" y="170" font-size="12" font-weight="600" fill="#2a78d6" text-anchor="middle">transform information</text>
+  <text x="778" y="170" font-size="12" font-weight="600" fill="#2a78d6" text-anchor="middle">gather information</text>
+
+  <!-- Row of boxes (centers: 120, 356, 567, 778; even 76px gaps, equal arrows) -->
+  <!-- Context / State -->
+  <rect x="40" y="180" width="160" height="90" rx="10" fill="#eef4fd" stroke="#2a78d6" stroke-width="1.5"/>
+  <text x="120" y="210" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle">Context / State</text>
+  <text x="120" y="231" font-size="11.5" fill="#52514e" text-anchor="middle">system prompt + history</text>
+  <text x="120" y="247" font-size="11.5" fill="#52514e" text-anchor="middle">+ tool results so far</text>
+
+  <!-- LLM (accent) -->
+  <rect x="276" y="180" width="160" height="90" rx="10" fill="#2a78d6" stroke="#1c5cab" stroke-width="1.5"/>
+  <text x="356" y="216" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">LLM</text>
+  <text x="356" y="238" font-size="11.5" fill="#dcebfb" text-anchor="middle">reason &#8594; next tokens</text>
+
+  <!-- Decision diamond (center 567,225 halfwidth 55 halfheight 45) -->
+  <polygon points="567,180 622,225 567,270 512,225" fill="#fcfcfb" stroke="#898781" stroke-width="1.5"/>
+  <text x="567" y="221" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">tool call</text>
+  <text x="567" y="237" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">needed?</text>
+
+  <!-- Tools / Environment -->
+  <rect x="698" y="180" width="160" height="90" rx="10" fill="#eef4fd" stroke="#2a78d6" stroke-width="1.5"/>
+  <text x="778" y="210" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle">Tools / Environment</text>
+  <text x="778" y="231" font-size="11.5" fill="#52514e" text-anchor="middle">search, code exec,</text>
+  <text x="778" y="247" font-size="11.5" fill="#52514e" text-anchor="middle">APIs, files</text>
+
+  <!-- equal-length arrows (76px gaps): Context->LLM, LLM->diamond, diamond->Tools -->
+  <line x1="200" y1="225" x2="276" y2="225" stroke="#52514e" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="436" y1="225" x2="512" y2="225" stroke="#52514e" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="622" y1="225" x2="698" y2="225" stroke="#52514e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="660" y="216" font-size="12" font-weight="600" fill="#1baf7a" text-anchor="middle">yes</text>
+
+  <!-- diamond -> Done (No), up -->
+  <line x1="580" y1="192" x2="628" y2="126" stroke="#52514e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="628" y="160" font-size="12" font-weight="600" fill="#52514e" text-anchor="middle">no</text>
+
+  <!-- feedback loop: Tools bottom -> down -> left -> up into Context bottom -->
+  <path d="M778,270 L778,330 L120,330 L120,274" fill="none" stroke="#52514e" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="449" y="352" font-size="12.5" fill="#52514e" text-anchor="middle">observation becomes new context &#8212; repeat until solved</text>
+</svg>

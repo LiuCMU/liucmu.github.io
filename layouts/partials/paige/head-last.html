@@ -21,6 +21,34 @@
     max-width: 100%;
     height: auto;
   }
+  /* Academic-style figures: centered image with a numbered caption below that
+     reads as distinct from the body text (smaller, muted, hairline separator).
+     Colors use Bootstrap vars so light/dark both work. */
+  article figure {
+    margin: 1.75rem auto;
+    padding: 0;
+    text-align: center;
+  }
+  article figure img {
+    display: block;
+    margin: 0 auto;
+    border-radius: 0.35rem;
+  }
+  article figure figcaption {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--bs-secondary-color);
+    text-align: left;
+    max-width: 42rem;
+    margin: 0.75rem auto 0;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--bs-border-color);
+  }
+  article figure figcaption b,
+  article figure figcaption strong {
+    color: var(--bs-body-color);
+    font-weight: 700;
+  }
   /* Homepage banner: full content width, centered, rounded corners. */
   img[alt="Homepage banner"] {
     display: block;
