@@ -49,6 +49,51 @@
     color: var(--bs-body-color);
     font-weight: 700;
   }
+  /* "What the LLM sees" context block: reflows on phone/tablet/web (no fixed-
+     width ASCII columns). Monospace only for keys/code. */
+  .context-window {
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-tertiary-bg);
+    border-radius: 0.6rem;
+    padding: 0.9rem 1.1rem;
+    margin: 1.4rem 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .context-window .cw-title {
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: var(--bs-secondary-color);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .context-window .cw-head { font-weight: 700; margin: 0.75rem 0 0.3rem; color: var(--bs-body-color); }
+  .context-window ul { margin: 0; padding-left: 1.15rem; }
+  .context-window li { margin: 0.25rem 0; }
+  .context-window .cw-k { font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .context-window .cw-note { color: var(--bs-secondary-color); }
+  .context-window code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.86em;
+    background: var(--bs-body-bg);
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.25rem;
+  }
+  @media (max-width: 480px) {
+    .context-window { font-size: 0.85rem; padding: 0.75rem 0.85rem; }
+  }
+  /* Disclaimer / acknowledgement callout. */
+  .disclaimer {
+    border-left: 4px solid var(--bs-border-color);
+    background: var(--bs-tertiary-bg);
+    padding: 0.65rem 1rem;
+    border-radius: 0.4rem;
+    margin: 1.4rem 0;
+    font-size: 0.92rem;
+    color: var(--bs-secondary-color);
+  }
   /* Homepage banner: full content width, centered, rounded corners. */
   img[alt="Homepage banner"] {
     display: block;
