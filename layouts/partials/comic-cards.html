@@ -6,7 +6,8 @@
   The whole card is a single link to the comic's own page.
 
   The image is found by partials/comic-image.html (front matter `image`, else
-  the first image in the bundle); a comic with no image gets a fallback tile.
+  the first image in the bundle) and sized down for the card by
+  partials/comic-sized.html; a comic with no image gets a fallback tile.
 */}}
 {{ with . }}
     <div class="paige-post-cards align-items-center d-flex flex-column w-100">
@@ -14,9 +15,17 @@
             {{ $comic := . }}
             <a class="paige-post-card paige-comic-card" href="{{ $comic.RelPermalink }}">
                 <p class="paige-post-card-title">{{ $comic.Title }}</p>
+                {{/* 900px covers the ~700px card at a 1.3x device pixel ratio. */}}
+                {{ $img := partial "comic-sized.html" (dict "page" $comic "width" 900) }}
                 <div class="paige-comic-card-img">
-                    {{ with partial "comic-image.html" $comic }}
-                        <img src="{{ .RelPermalink }}" alt="{{ $comic.Title }}" loading="lazy">
+                    {{ if $img }}
+                        {{/* width/height reserve the space before the image loads,
+                             so the page doesn't jump. SVGs have neither. */}}
+                        {{ $dims := "" }}
+                        {{ if ne $img.MediaType.SubType "svg" }}
+                            {{ $dims = printf `width="%d" height="%d"` $img.Width $img.Height }}
+                        {{ end }}
+                        <img src="{{ $img.RelPermalink }}" alt="{{ $comic.Title }}" loading="lazy" {{ $dims | safeHTMLAttr }}>
                     {{ else }}
                         <span class="paige-post-card-noimg" aria-hidden="true">🗯️</span>
                     {{ end }}

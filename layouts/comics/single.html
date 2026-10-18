@@ -14,9 +14,16 @@
     {{ partial "paige/page-header.html" $page }}
 
     <main class="mw-100" id="paige-page-content">
-        {{ with partial "comic-image.html" $page }}
+        {{/* 1600px is ~2x the widest the article column ever gets, so the comic
+             stays sharp on a retina display without shipping the full source. */}}
+        {{ $img := partial "comic-sized.html" (dict "page" $page "width" 1600) }}
+        {{ with $img }}
+            {{ $dims := "" }}
+            {{ if ne .MediaType.SubType "svg" }}
+                {{ $dims = printf `width="%d" height="%d"` .Width .Height }}
+            {{ end }}
             <div class="paige-comic-full">
-                <img src="{{ .RelPermalink }}" alt="{{ $page.Title }}">
+                <img src="{{ .RelPermalink }}" alt="{{ $page.Title }}" {{ $dims | safeHTMLAttr }}>
             </div>
         {{ end }}
 

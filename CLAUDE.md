@@ -87,6 +87,15 @@ count or reading time.
   front matter `image` (e.g. `image: "panel.png"`), else the **first image
   resource in the bundle**. So a bundle with one image needs no `image` field.
   A comic with no image falls back to a 🗯️ tile on its card.
+- **Image sizing** (`layouts/partials/comic-sized.html`): source comics are
+  often 2000px+ and multiple MB, so Hugo resizes and converts them to **WebP**
+  (a modern image format, much smaller than JPEG at the same quality) — 900px
+  wide for the card, 1600px for the single page. Drop in the full-resolution
+  original; don't pre-shrink it. Two guards in that partial: **SVG** (a vector
+  format with no pixel dimensions) is passed through, since `.Resize` can't
+  process it, and an image already narrower than the target is passed through
+  rather than upscaled. The guards are nested `if`s, not one `and` — `and`
+  would evaluate `.Width` on an SVG and break the build.
 - The Markdown **body is the explanation** — one paragraph, aim for under 125
   words, and **no leading `# H1`** (same rule as posts: the title comes from
   front matter). Do *not* embed the image in the body; `layouts/comics/single.html`

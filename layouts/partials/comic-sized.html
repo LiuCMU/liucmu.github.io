@@ -1,0 +1,28 @@
+{{/*
+  Returns a comic's image resized to at most `width` pixels wide and converted
+  to WebP, or false if the page has no comic image.
+
+  Context (.) is a dict: { "page": <comic page>, "width": <max px> }
+
+  Why: source comics are often 2000px+ and several MB, which is far more than
+  either the card or the article column needs. Hugo's .Resize caches the output
+  under resources/_gen/, so this costs nothing after the first build.
+
+  Guards, in order — both matter:
+    - SVG has no raster dimensions and cannot be processed by .Resize, so it is
+      passed through untouched (it scales losslessly anyway).
+    - An image already narrower than `width` is passed through rather than
+      upscaled, which would only add bytes and blur.
+  The nested ifs are deliberate: `and` would evaluate .Width on an SVG resource
+  and fail the build.
+*/}}
+{{ $img := partial "comic-image.html" .page }}
+{{ $max := .width }}
+{{ if $img }}
+    {{ if ne $img.MediaType.SubType "svg" }}
+        {{ if gt $img.Width $max }}
+            {{ $img = $img.Resize (printf "%dx webp q82" $max) }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+{{ return $img }}
