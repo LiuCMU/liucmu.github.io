@@ -93,6 +93,39 @@
     font-size: 0.92rem;
     color: var(--bs-secondary-color);
   }
+  /* Site title: keep "👋 Welcome to Zhen's Blog" on a single line at every
+     width. Paige puts Bootstrap's .display-1 on it, which is a flat 5rem
+     (80px) above 1200px and a viewport-based size below — big enough that the
+     title wrapped onto two or three lines on tablets and phones.
+
+     The fix sizes the title off its own container instead of the viewport.
+     `container-type: inline-size` makes the header a *container query
+     container*, so 1cqw = 1% of the header's width — and the header is the
+     Bootstrap `.container`, whose width steps down at each breakpoint
+     (1116 / 936 / 696 / 516px, then fluid below 576px). Sizing off the
+     container rather than the viewport matters: the container drops ~25% at
+     576px and 768px while the viewport only grows, so a vw-based size that
+     fits at 575px overflows at 576px.
+
+     The 7.2cqw figure, measured in the browser: this title renders about
+     12.0x its font size wide at 80px but 12.6x at 20px (glyph hinting and the
+     emoji's minimum advance don't scale linearly), so the worst case needs
+     <= 100/12.6 = 7.9cqw. 7.2cqw keeps ~9% in reserve for platforms whose
+     default sans or 👋 emoji is wider than macOS's — Segoe UI Emoji on
+     Windows and Noto on Android both differ. min() caps it at 5rem, so the
+     desktop size is exactly what Bootstrap's .display-1 gave before.
+
+     Note: if the site title in hugo.toml ever gets longer, re-measure and
+     lower the cqw value — `white-space: nowrap` means an over-wide title
+     overflows the page instead of wrapping. */
+  #paige-site-header {
+    container-type: inline-size;
+  }
+  #paige-site-title {
+    font-size: min(5rem, 7.2cqw);
+    white-space: nowrap;
+  }
+
   /* Homepage banner: full content width, centered, rounded corners. */
   img[alt="Homepage banner"] {
     display: block;

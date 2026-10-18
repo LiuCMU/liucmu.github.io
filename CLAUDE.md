@@ -147,6 +147,16 @@ count or reading time.
   modes both work automatically.
 - Nav order is set by `weight` in `hugo.toml`'s `[[menu.main]]` entries:
   Home 1 · Posts 2 · Comics 3 · About 4 · Tags 5.
+- The **site title stays on one line at every screen width**. Paige gives it
+  Bootstrap's `.display-1`, which wraps on phones and tablets, so
+  `head-last.html` makes `#paige-site-header` a *container query container*
+  (`container-type: inline-size`, so `1cqw` = 1% of the header's own width) and
+  sets `font-size: min(5rem, 7.2cqw)` with `white-space: nowrap`. Container
+  units, not `vw`: the Bootstrap `.container` drops ~25% at the 576px and 768px
+  breakpoints while the viewport only grows, so a `vw` size that fits at 575px
+  overflows at 576px. The `7.2` is measured — **re-measure it if the title in
+  `hugo.toml` changes**, because `nowrap` turns an over-wide title into page
+  overflow rather than a second line.
 - Nav: **Home** is a menu item in `hugo.toml`; breadcrumbs are disabled
   (`paige.site.disable_breadcrumbs`). The per-post table-of-contents outline is
   disabled site-wide (`paige.pages.disable_toc = true`).
