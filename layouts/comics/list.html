@@ -1,0 +1,16 @@
+{{/*
+  Comics section list override: the "Comics" page header, then the comic
+  preview cards (title + image only). Mirrors layouts/posts/list.html.
+*/}}
+{{ define "main" }}
+{{ $page := . }}
+{{ $comics := (where site.RegularPages "Section" "comics").ByDate.Reverse }}
+
+{{ partial "paige/page.html" $page }}
+
+{{ with $comics }}
+    {{ partial "comic-cards.html" . }}
+{{ else }}
+    <p class="text-secondary text-center" style="margin-top: 2rem">No comics yet.</p>
+{{ end }}
+{{ end }}

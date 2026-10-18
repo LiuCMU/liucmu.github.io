@@ -1,0 +1,27 @@
+{{/*
+  Renders a grid of comic preview cards. Context (.) is a page collection.
+
+  Deliberately simpler than post-cards.html: a comic card is just the title on
+  top and the comic image below it — no summary, tags, date or reading time.
+  The whole card is a single link to the comic's own page.
+
+  The image is found by partials/comic-image.html (front matter `image`, else
+  the first image in the bundle); a comic with no image gets a fallback tile.
+*/}}
+{{ with . }}
+    <div class="paige-post-cards align-items-center d-flex flex-column w-100">
+        {{ range . }}
+            {{ $comic := . }}
+            <a class="paige-post-card paige-comic-card" href="{{ $comic.RelPermalink }}">
+                <p class="paige-post-card-title">{{ $comic.Title }}</p>
+                <div class="paige-comic-card-img">
+                    {{ with partial "comic-image.html" $comic }}
+                        <img src="{{ .RelPermalink }}" alt="{{ $comic.Title }}" loading="lazy">
+                    {{ else }}
+                        <span class="paige-post-card-noimg" aria-hidden="true">🗯️</span>
+                    {{ end }}
+                </div>
+            </a>
+        {{ end }}
+    </div>
+{{ end }}

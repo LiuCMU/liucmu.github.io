@@ -194,13 +194,51 @@
     font-weight: 600;
   }
 
-  /* Homepage stats: 2 columns (value over label). */
+  /* Comic cards: same frame as a post card, but title + image only. The image
+     is shown whole (object-fit: contain) and height-capped, so comics of any
+     aspect ratio preview without cropping or swamping the card. */
+  .paige-comic-card-img {
+    background-color: var(--bs-tertiary-bg);
+    border-radius: 0.5rem;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .paige-comic-card-img img {
+    display: block;
+    width: auto;
+    height: auto;
+    /* Bounded, not stretched: a landscape comic fills the card width, a tall
+       one is capped at ~34rem so a single card can't run off the screen. */
+    max-width: 100%;
+    max-height: 34rem;
+    border-radius: 0.35rem;
+  }
+
+  /* Single comic page: the comic at full content width, above the explanation. */
+  .paige-comic-full {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 1.75rem;
+  }
+  .paige-comic-full img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+
+  /* Homepage stats: 3 columns (value over label), kept on one row at every
+     width — the tiles and type shrink on phones instead of wrapping 2 + 1. */
   .paige-stats {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
     width: 100%;
-    max-width: 32rem;
+    max-width: 42rem;
     margin: 2rem auto 0;
   }
   .paige-stat {
@@ -218,6 +256,12 @@
     color: var(--bs-secondary-color);
     font-size: 0.9rem;
     margin-top: 0.25rem;
+  }
+  @media (max-width: 480px) {
+    .paige-stats { gap: 0.6rem; }
+    .paige-stat { padding: 0.75rem 0.4rem; }
+    .paige-stat-value { font-size: 1.4rem; }
+    .paige-stat-label { font-size: 0.8rem; }
   }
 </style>
 

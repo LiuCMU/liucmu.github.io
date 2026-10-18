@@ -1,10 +1,12 @@
 {{/*
-  Homepage stats: Posts and Readers, as a 2-column (value over label) grid.
-  Posts is counted at build time. Readers (unique visitors) comes from
-  data/stats.json, which the deploy workflow refreshes from the GoatCounter API
-  before each build. Shows "—" if the data file has no value yet.
+  Homepage stats: Posts, Comics and Readers, as a (value over label) grid that
+  wraps on narrow screens. Posts and Comics are counted at build time. Readers
+  (unique visitors) comes from data/stats.json, which the deploy workflow
+  refreshes from the GoatCounter API before each build. Shows "—" if the data
+  file has no value yet.
 */}}
 {{ $posts := (where site.RegularPages "Section" "posts") }}
+{{ $comics := (where site.RegularPages "Section" "comics") }}
 {{ $readers := "—" }}
 {{ with site.Data.stats }}
     {{ with .readers }}
@@ -16,6 +18,10 @@
     <div class="paige-stat">
         <div class="paige-stat-value">{{ len $posts }}</div>
         <div class="paige-stat-label">Posts</div>
+    </div>
+    <div class="paige-stat">
+        <div class="paige-stat-value">{{ len $comics }}</div>
+        <div class="paige-stat-label">Comics</div>
     </div>
     <div class="paige-stat">
         <div class="paige-stat-value">{{ $readers }}</div>

@@ -1,0 +1,30 @@
+{{/*
+  Single comic page: title (from Paige's page header), the comic at full width,
+  then the Markdown body as the explanation.
+
+  This replaces Paige's single.html (which is just partials/paige/page.html) so
+  the image can sit between the header and the body without the author having to
+  embed it in the Markdown. The surrounding <article>/<main> structure and the
+  header/footer partials are kept identical to Paige's so site CSS still applies.
+*/}}
+{{ define "main" }}
+{{ $page := . }}
+
+<article class="align-items-center d-flex flex-column paige-kind-page" id="paige-page">
+    {{ partial "paige/page-header.html" $page }}
+
+    <main class="mw-100" id="paige-page-content">
+        {{ with partial "comic-image.html" $page }}
+            <div class="paige-comic-full">
+                <img src="{{ .RelPermalink }}" alt="{{ $page.Title }}">
+            </div>
+        {{ end }}
+
+        {{ with $page.Content }}
+            {{ . | safeHTML }}
+        {{ end }}
+    </main>
+
+    {{ partial "paige/page-footer.html" $page }}
+</article>
+{{ end }}

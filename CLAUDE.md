@@ -20,6 +20,9 @@ hugo --gc --minify
 # New post (creates content/posts/<slug>/index.md from archetypes/default.md)
 hugo new posts/my-post-title/index.md
 
+# New comic (creates content/comics/<slug>/index.md from archetypes/comics.md)
+hugo new comics/my-comic-title/index.md
+
 # Update the theme
 hugo mod get github.com/willfaught/paige@latest && hugo mod tidy
 ```
@@ -72,6 +75,27 @@ To override any other Paige template, add a file at the matching path under
   image area with no letterboxing; posts without one fall back to a 📝 tile.
 - `summary` is what shows as the card preview text — keep it to ~1–2 sentences.
 
+### Comics (`content/comics/`)
+
+A second, deliberately minimal content section — no tags, summary, authors, word
+count or reading time.
+
+- Each comic is a page bundle: `content/comics/<slug>/index.md` with the comic
+  image co-located in the same folder. Front matter comes from
+  `archetypes/comics.md`: `title`, `date`, `draft`, and optional `image`.
+- **Image resolution** (`layouts/partials/comic-image.html`): the file named by
+  front matter `image` (e.g. `image: "panel.png"`), else the **first image
+  resource in the bundle**. So a bundle with one image needs no `image` field.
+  A comic with no image falls back to a 🗯️ tile on its card.
+- The Markdown **body is the explanation** — one paragraph, aim for under 125
+  words, and **no leading `# H1`** (same rule as posts: the title comes from
+  front matter). Do *not* embed the image in the body; `layouts/comics/single.html`
+  places it between the title and the explanation.
+- `content/comics/_index.md` uses a `cascade` block to disable Paige's authors /
+  reading time / word count on every comic page.
+- Comics are excluded from the homepage post cards and the Tags taxonomy simply
+  because those queries filter on `Section` / use tags, which comics don't set.
+
 ### References / citations (see `content/posts/auth/index.md`)
 
 - Cite in-text as superscripts: `<sup>[n](#ref-n)</sup>` (raw HTML works because
@@ -93,15 +117,27 @@ To override any other Paige template, add a file at the matching path under
   time). The whole card is a single `<a>`, so tags are rendered as **plain text**
   there (nested `<a>` would be invalid HTML); clickable tags live on the post /
   tag pages.
-- Homepage **stats** are in `layouts/partials/home-stats.html`: two tiles,
-  **Posts** (build-time count) and **Readers** (from `data/stats.json`). Reading
-  time / word count are shown on cards and post pages, **not** as a homepage
-  page-level figure.
+- Comic cards are rendered by `layouts/partials/comic-cards.html` and used by
+  `layouts/comics/list.html`. Same card frame as a post card, but **title on top
+  and the comic image below it — nothing else**. The image is shown whole
+  (bounded by `max-width: 100%` / `max-height: 34rem`, never cropped), so any
+  aspect ratio previews cleanly. An empty section renders "No comics yet."
+- `layouts/comics/single.html` replaces Paige's `single.html` for comics:
+  Paige's page header (title + date), then the comic at full content width
+  (`.paige-comic-full`), then the Markdown body as the explanation.
+- Homepage **stats** are in `layouts/partials/home-stats.html`: three tiles,
+  **Posts** and **Comics** (build-time counts) and **Readers** (from
+  `data/stats.json`). The grid is a fixed 3 columns at every width, with a
+  `@media (max-width: 480px)` block that shrinks the tiles rather than letting
+  them wrap 2 + 1. Reading time / word count are shown on cards and post pages,
+  **not** as a homepage page-level figure.
 - **Custom CSS lives in the `<style>` block of
   `layouts/partials/paige/head-last.html`** (cards, stats, banner, responsive
   images). Use Bootstrap CSS variables (`var(--bs-border-color)`,
   `--bs-body-bg`, `--bs-secondary-color`, `--bs-tertiary-bg`) so light and dark
   modes both work automatically.
+- Nav order is set by `weight` in `hugo.toml`'s `[[menu.main]]` entries:
+  Home 1 · Posts 2 · Comics 3 · About 4 · Tags 5.
 - Nav: **Home** is a menu item in `hugo.toml`; breadcrumbs are disabled
   (`paige.site.disable_breadcrumbs`). The per-post table-of-contents outline is
   disabled site-wide (`paige.pages.disable_toc = true`).

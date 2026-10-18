@@ -1,0 +1,21 @@
+{{/*
+  Returns the image resource for a comic page bundle, or false if there is none.
+  Context (.) is the comic page.
+
+  Resolution order:
+    1. the file named by front matter `image` (e.g. image: "panel.png")
+    2. the first image resource in the bundle (alphabetical by filename)
+
+  Returning the resource (rather than printing an <img>) lets the card grid and
+  the single-comic page size and frame the same image differently.
+*/}}
+{{ $comic := false }}
+{{ with .Params.image }}
+    {{ $comic = $.Resources.GetMatch . }}
+{{ end }}
+{{ if not $comic }}
+    {{ with .Resources.ByType "image" }}
+        {{ $comic = index . 0 }}
+    {{ end }}
+{{ end }}
+{{ return $comic }}
